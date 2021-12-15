@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GoogleBooks.Model
+﻿namespace GoogleBooks.Model
 {
     public class Books
     {
