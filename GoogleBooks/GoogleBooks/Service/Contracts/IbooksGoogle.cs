@@ -1,7 +1,7 @@
 ﻿using GoogleBooks.Model;
 using System.Threading.Tasks;
 
-namespace GoogleBooks.Service.Implementation
+namespace GoogleBooks.Service.Contracts
 {
     public interface IbooksGoogle
     {

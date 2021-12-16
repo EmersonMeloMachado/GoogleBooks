@@ -1,9 +1,9 @@
 ﻿using GoogleBooks.Model;
 using System.Threading.Tasks;
 using GoogleBooks.Service.Http;
-using GoogleBooks.Service.Implementation;
+using GoogleBooks.Service.Contracts;
 
-namespace GoogleBooks.Service.Contracts
+namespace GoogleBooks.Service.Implementation 
 {
     public class BooksGoggle : IbooksGoogle
     {
