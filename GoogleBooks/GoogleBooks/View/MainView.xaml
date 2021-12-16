@@ -34,6 +34,11 @@
                 </FormattedString>
             </Label.FormattedText>
         </Label>
+        <Button
+            Command="{Binding LoadCommand}"
+            HeightRequest="150"
+            Text="Load Command"
+            WidthRequest="150" />
     </StackLayout>
 
 </base:BasePage>

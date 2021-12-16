@@ -1,5 +1,6 @@
 ﻿using System;
 using Xamarin.Forms;
+using Acr.UserDialogs;
 using Xamarin.Essentials;
 using System.Threading.Tasks;
 using GoogleBooks.Model.Navigation;
@@ -10,6 +11,7 @@ namespace GoogleBooks.ViewModel.Base
     public abstract class BaseViewModel : ModelBase
     {
         protected INavigationService NavigationService { get; }
+        protected IUserDialogs UserDialogService { get; }
 
         protected bool Inscrito { get; set; }
         protected bool Disposed { get; set; }
@@ -40,6 +42,8 @@ namespace GoogleBooks.ViewModel.Base
             get => logoutCommand;
             protected set => SetProperty(ref logoutCommand, value);
         }
+
+        public bool IsNotBusy { get => !isBusy; }
 
         public bool IsBusy
         {
@@ -89,14 +93,15 @@ namespace GoogleBooks.ViewModel.Base
             set => SetProperty(ref iconImageSource, value);
         }
 
-        public BaseViewModel(INavigationService navigationService)
+        public BaseViewModel(INavigationService navigationService, IUserDialogs userDialogs)
         {
             Inscrito = false;
             Disposed = false;
             semInternet = false;
             IsListaVisivel = true;
 
-            NavigationService = navigationService;  
+            NavigationService = navigationService;
+            UserDialogService = userDialogs;
         }
 
         public virtual Task SetParameters(NavigationParameters parameters)

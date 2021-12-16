@@ -1,9 +1,12 @@
 ﻿using DryIoc;
 using System;
+using Acr.UserDialogs;
+using static DryIoc.Made;
 using GoogleBooks.View.Base;
 using System.Collections.Concurrent;
 using GoogleBooks.Service.Contracts;
 using GoogleBooks.Service.Navigation;
+using GoogleBooks.Service.Implementation;
 
 namespace GoogleBooks.ViewModel.Base
 {
@@ -22,6 +25,8 @@ namespace GoogleBooks.ViewModel.Base
             containerBuilder = new Container(rules => rules.WithoutFastExpressionCompiler());
 
             containerBuilder.Register<INavigationService, NavigationService>();
+            containerBuilder.Register(made: Of(() => UserDialogs.Instance));
+            containerBuilder.Register<IBooksGoogle, BooksGoggle>();
 
             mappings = new ConcurrentDictionary<Type, Type>();
         }

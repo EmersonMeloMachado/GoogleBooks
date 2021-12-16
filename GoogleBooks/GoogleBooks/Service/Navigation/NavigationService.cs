@@ -200,8 +200,9 @@ namespace GoogleBooks.Service.Navigation
 
                 return page;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 throw;
             }
         }
