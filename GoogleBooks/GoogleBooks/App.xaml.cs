@@ -1,7 +1,5 @@
 ﻿using Xamarin.Forms;
 using GoogleBooks.View;
-using System.Threading;
-using GoogleBooks.Helpers;
 using GoogleBooks.ViewModel;
 using System.Threading.Tasks;
 using GoogleBooks.ViewModel.Base;
@@ -27,8 +25,7 @@ namespace GoogleBooks
 
         private void InitializeApp()
         {
-            ThreadHelper.Init(SynchronizationContext.Current);
-            ThreadHelper.RunOnUIThread(async () => { await InitializeNavigation(); });
+            Device.BeginInvokeOnMainThread(async () => { await InitializeNavigation(); });
         }
 
         private void StartSettings()
