@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<base:BasePage
+    x:Class="GoogleBooks.View.BooksView"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:base="clr-namespace:GoogleBooks.View.Base"
+    xmlns:converters="clr-namespace:GoogleBooks.Converter"
+    xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+    xmlns:sk="clr-namespace:Xamarin.Forms.Skeleton;assembly=Xamarin.Forms.Skeleton"
+    ios:Page.UseSafeArea="False">
+    <base:BasePage.Resources>
+        <ResourceDictionary>
+            <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImage" />
+        </ResourceDictionary>
+        <Style TargetType="Grid">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="#ffffff" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </base:BasePage.Resources>
+    <base:BasePage.Content>
+        <Grid x:Name="MainGrid" RowDefinitions="auto,*">
+            <SearchBar
+                Grid.Row="0"
+                HeightRequest="50"
+                Placeholder="Pesquisar"
+                SearchCommand="{Binding SearchCommand}"
+                Text="{Binding SearchText, Mode=TwoWay}" />
+
+            <CollectionView
+                Grid.Row="1"
+                Margin="10,19,10,0"
+                sk:Skeleton.Animation="{sk:DefaultAnimation Source=Beat,
+                                                            Interval='600',
+                                                            Parameter='1.03'}"
+                sk:Skeleton.BackgroundColor="{StaticResource WhiteColor}"
+                sk:Skeleton.IsBusy="{Binding IsBusy}"
+                sk:Skeleton.IsParent="True"
+                BackgroundColor="{StaticResource WhiteColor}"
+                HorizontalScrollBarVisibility="Never"
+                ItemsSource="{Binding BaseBooks}"
+                ItemsUpdatingScrollMode="KeepItemsInView"
+                RemainingItemsThreshold="{Binding RemainingItems}"
+                RemainingItemsThresholdReachedCommand="{Binding ThresholdReachedCommand}"
+                SelectedItem="{Binding ItemSelected}"
+                SelectionChangedCommand="{Binding SelectedCommand, Mode=TwoWay}"
+                SelectionChangedCommandParameter="{Binding ItemSelected}"
+                SelectionMode="Single">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid
+                            sk:Skeleton.Animation="{sk:DefaultAnimation Source=Beat,
+                                                                        Interval='600',
+                                                                        Parameter='1.03'}"
+                            sk:Skeleton.BackgroundColor="{StaticResource WhiteColor}"
+                            sk:Skeleton.IsBusy="{Binding IsBusy}"
+                            sk:Skeleton.IsParent="True"
+                            BackgroundColor="{StaticResource WhiteColor}"
+                            ColumnDefinitions="Auto,*"
+                            ColumnSpacing="5"
+                            RowSpacing="10">
+
+                            <Frame
+                                Grid.Column="0"
+                                Margin="10,10,5,10"
+                                Padding="0"
+                                sk:Skeleton.Animation="{sk:DefaultAnimation Source=Beat,
+                                                                            Interval='600',
+                                                                            Parameter='1.03'}"
+                                sk:Skeleton.BackgroundColor="{StaticResource GrayColor}"
+                                sk:Skeleton.IsBusy="{Binding IsBusy}"
+                                BackgroundColor="{StaticResource GrayColor}"
+                                CornerRadius="5"
+                                HasShadow="False"
+                                IsClippedToBounds="True"
+                                WidthRequest="70">
+                                <ffimageloading:CachedImage
+                                    Aspect="AspectFit"
+                                    FadeAnimationDuration="500"
+                                    FadeAnimationEnabled="True"
+                                    HeightRequest="100"
+                                    HorizontalOptions="FillAndExpand"
+                                    Source="{Binding Thumbnail, Converter={StaticResource ByteArrayToImage}}"
+                                    VerticalOptions="FillAndExpand"
+                                    WidthRequest="100" />
+                            </Frame>
+                            <Frame
+                                Grid.Column="1"
+                                Margin="0,10,10,10"
+                                Padding="0"
+                                sk:Skeleton.Animation="{sk:DefaultAnimation Source=Beat,
+                                                                            Interval='600',
+                                                                            Parameter='1.03'}"
+                                sk:Skeleton.BackgroundColor="{StaticResource GrayColor}"
+                                sk:Skeleton.IsBusy="{Binding IsBusy}"
+                                BackgroundColor="{StaticResource GrayColor}"
+                                CornerRadius="5"
+                                HasShadow="False"
+                                HorizontalOptions="FillAndExpand"
+                                IsClippedToBounds="True">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="20"
+                                    HorizontalOptions="StartAndExpand"
+                                    HorizontalTextAlignment="Start"
+                                    Text="{Binding Title}"
+                                    VerticalTextAlignment="Start" />
+                            </Frame>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </base:BasePage.Content>
+</base:BasePage>

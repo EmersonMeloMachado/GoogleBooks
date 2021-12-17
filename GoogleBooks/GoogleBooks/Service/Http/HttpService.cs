@@ -33,14 +33,10 @@ namespace GoogleBooks.Service.Http
             string url,
             string accessToken = null)
         {
-            using HttpRequestMessage httpRequestMessage = new HttpRequestMessage(
-                method: HttpMethod.Get,
-                requestUri: url);
+            using HttpRequestMessage httpRequestMessage = new HttpRequestMessage(method: HttpMethod.Get,requestUri: url);
 
             if (!string.IsNullOrWhiteSpace(accessToken))
-                httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
-                    scheme: "Bearer",
-                    parameter: accessToken);
+                httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(scheme: "Bearer",parameter: accessToken);
 
             using HttpResponseMessage httpResponseMessage = await Client.SendAsync(httpRequestMessage);
 
@@ -53,6 +49,28 @@ namespace GoogleBooks.Service.Http
                 return default;
 
             return JsonSerializer.Deserialize<T>(responseContent, _JsonSerializerOptions);
+        }
+
+        public async Task<byte[]> GetImage<T>(
+            string url,
+            string accessToken = null)
+        {
+            using HttpRequestMessage httpRequestMessage = new HttpRequestMessage(method: HttpMethod.Get, requestUri: url);
+
+            if (!string.IsNullOrWhiteSpace(accessToken))
+                httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: accessToken);
+
+            using HttpResponseMessage httpResponseMessage = await Client.SendAsync(httpRequestMessage);
+
+            var responseContent = await httpResponseMessage.Content.ReadAsByteArrayAsync();
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                await ExceptionFromHttpStatusCode(httpResponseMessage);
+
+            if (responseContent.Length <= 0)
+                return default;
+
+            return responseContent;
         }
 
         public async Task PostJson(

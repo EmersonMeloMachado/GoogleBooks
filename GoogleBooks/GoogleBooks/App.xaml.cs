@@ -20,7 +20,8 @@ namespace GoogleBooks
 
         private static void RegisterViewModels()
         {
-            ViewModelLocator.Current.RegisterForNavigation<MainView, MainViewModel>();
+            ViewModelLocator.Current.RegisterForNavigation<BooksView, BooksViewModel>();
+            ViewModelLocator.Current.RegisterForNavigation<BookDetailView, BookDetailViewModel>();
         }
 
         private void InitializeApp()
@@ -35,7 +36,7 @@ namespace GoogleBooks
 
         private async Task InitializeNavigation()
         {
-            await navigationService.InitializeAsync<MainViewModel>(null, true);
+            await navigationService.InitializeAsync<BooksViewModel>(null, true);
         }
 
         protected override void OnStart()

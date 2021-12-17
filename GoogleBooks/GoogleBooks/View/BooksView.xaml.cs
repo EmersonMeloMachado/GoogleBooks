@@ -2,9 +2,9 @@
 
 namespace GoogleBooks.View
 {
-    public partial class MainView : BasePage
+    public partial class BooksView : BasePage
     {
-        public MainView()
+        public BooksView()
         {
             InitializeComponent();
         }

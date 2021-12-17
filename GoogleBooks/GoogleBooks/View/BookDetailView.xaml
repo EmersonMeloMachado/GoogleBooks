@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<base:BasePage
+    x:Class="GoogleBooks.View.BookDetailView"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:base="clr-namespace:GoogleBooks.View.Base"
+    xmlns:converters="clr-namespace:GoogleBooks.Converter"
+    xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
+    <base:BasePage.Resources>
+        <ResourceDictionary>
+            <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImage" />
+        </ResourceDictionary>
+    </base:BasePage.Resources>
+    <base:BasePage.Content>
+        <ScrollView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <Grid
+                ColumnDefinitions="*,auto"
+                HorizontalOptions="FillAndExpand"
+                RowDefinitions="auto,*,100"
+                VerticalOptions="FillAndExpand">
+
+                <ffimageloading:CachedImage
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Aspect="AspectFit"
+                    HorizontalOptions="FillAndExpand"
+                    Source="{Binding BaseBooks.Thumbnail, Converter={StaticResource ByteArrayToImage}}"
+                    VerticalOptions="FillAndExpand" />
+
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Padding="10"
+                    HorizontalOptions="FillAndExpand"
+                    Text="{Binding BaseBooks.Description}"
+                    VerticalOptions="FillAndExpand" />
+
+                <Button
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    BackgroundColor="Transparent"
+                    HeightRequest="50"
+                    Text="Abrir Web"
+                    WidthRequest="80" />
+            </Grid>
+        </ScrollView>
+    </base:BasePage.Content>
+</base:BasePage>

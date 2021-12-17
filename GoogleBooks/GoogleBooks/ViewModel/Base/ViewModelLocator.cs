@@ -41,7 +41,6 @@ namespace GoogleBooks.ViewModel.Base
         public void Register<T>() where T : class => containerBuilder.Register<T>();
 
         public void RegisterForNavigation<TView, TViewModel>(IReuse reuseItem = null)
-        where TView : IPage
         where TViewModel : BaseViewModel
         {
             containerBuilder.Register<TViewModel>(reuse: reuseItem, ifAlreadyRegistered: IfAlreadyRegistered.Keep, setup: DryIoc.Setup.With(trackDisposableTransient: true));
