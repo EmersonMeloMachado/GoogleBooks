@@ -2,7 +2,7 @@
 using System;
 using Acr.UserDialogs;
 using static DryIoc.Made;
-using GoogleBooks.View.Base;
+using GoogleBooks.Service.Http;
 using System.Collections.Concurrent;
 using GoogleBooks.Service.Contracts;
 using GoogleBooks.Service.Navigation;

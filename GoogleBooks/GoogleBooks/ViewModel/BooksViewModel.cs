@@ -4,6 +4,7 @@ using Xamarin.Forms;
 using Acr.UserDialogs;
 using GoogleBooks.Data;
 using GoogleBooks.Model;
+using Xamarin.Essentials;
 using GoogleBooks.Helpers;
 using System.Windows.Input;
 using System.Threading.Tasks;
@@ -13,7 +14,6 @@ using System.Collections.Generic;
 using GoogleBooks.Model.Navigation;
 using GoogleBooks.Service.Contracts;
 using System.Collections.ObjectModel;
-using Xamarin.Essentials;
 
 namespace GoogleBooks.ViewModel
 {

@@ -7,6 +7,10 @@ namespace GoogleBooks.Service.Implementation
 {
     public class BooksService : IBooksService
     {
+        public BooksService()
+        {
+            
+        }
         public Task<Books> GetBooks(string books) => HttpService.Current.Get<Books>(
                 url: $"https://www.googleapis.com/books/v1/volumes?q={books}&maxResults=40&startIndex=0");
 
