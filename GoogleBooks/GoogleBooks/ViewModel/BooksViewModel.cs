@@ -23,11 +23,8 @@ namespace GoogleBooks.ViewModel
         public ObservableCollection<BaseBooks> baseBooks;
         public ObservableCollection<BaseBooks> filteredBaseBooks;
         private string search;
-        private bool isLoading;
+        private bool isFavorites;
         private string selectedBooksId;
-        private int remainingItems = 0;
-        private int offSetInicial = 0;
-        private int offSetFinal = 0;
 
         private readonly IBooksService BooksService;
 
@@ -61,10 +58,10 @@ namespace GoogleBooks.ViewModel
             set => SetProperty(ref filteredBaseBooks, value);
         }
 
-        public bool IsLoading
+        public bool IsFavorites
         {
-            get => isLoading;
-            set => SetProperty(ref isLoading, value);
+            get => isFavorites;
+            set => SetProperty(ref isFavorites, value);
         }
 
         public string Search
@@ -75,24 +72,6 @@ namespace GoogleBooks.ViewModel
                 SetProperty(ref search, value);
                 Filter(search);
             }
-        }
-
-        public int RemainingItems
-        {
-            get { return remainingItems; }
-            set { SetProperty(ref remainingItems, value); }
-        }
-
-        public int OffSetInicial
-        {
-            get { return offSetInicial; }
-            set { SetProperty(ref offSetInicial, value); }
-        }
-
-        public int OffSetFinal
-        {
-            get { return offSetFinal; }
-            set { SetProperty(ref offSetFinal, value); }
         }
 
         public BooksViewModel(IBooksService BooksService, INavigationService navigationService, IUserDialogs userDialogs) : 
@@ -183,39 +162,21 @@ namespace GoogleBooks.ViewModel
                 IsBusy = false;
             }
         });
-        public ICommand ThresholdReachedCommand => new Command(async () =>
-        {
-            if (IsBusy)
-                return;
 
+        public ICommand FilterFavoritesCommand => new Command(() =>
+        {
             try
             {
-                if (OffSetFinal == 0) return;
+                if (IsBusy)
+                    return;
 
-                IsBusy = true;
-                await OnLoadPageData();
-                //var items = new List<Pokemon>();
+                IsFavorites = IsFavorites == false ? true : false;
 
-                //OffSetInicial = OffSetFinal;
-
-                //PokemonList = await _pokeApi.ObterListaPokemons(OffSetInicial, OffSetFinal);
-
-                //if (PokemonList != null)
-                //{
-                //    foreach (var poke in PokemonList.results)
-                //    {
-                //        var pokemon = await _pokeApi.ObterPokemon(poke.url);
-                //        if (pokemon != null)
-                //            items.Add(pokemon);
-                //    }
-
-                //    Pokemons.AddRange(items);
-                //    OffSetFinal += 20;
-                //}
-                IsBusy = false;
+                Filter("");
             }
             catch (Exception ex)
             {
+                IsBusy = false;
                 Console.WriteLine(ex.Message);
             }
             finally
@@ -258,6 +219,8 @@ namespace GoogleBooks.ViewModel
                         b.Description = item.Description;
                         b.Authors = item.Authors;
                         b.BuyLink = item.BuyLink;
+                        b.IsFavorite = item.IsFavorite;
+                        b.Image = item.Image;
                         b.Thumbnail = Convert.FromBase64String(item.Image);
                         baseBooks.Add(b);
                         FilteredBaseBooks.Add(item);
@@ -329,21 +292,50 @@ namespace GoogleBooks.ViewModel
                 var baseBooks = FilteredBaseBooks?.Where(x => x.Title.ToUpper().RemoveDiacritics().Contains(text.ToUpper().RemoveDiacritics())).ToList();
                 if (baseBooks.Count > 0)
                 {
-                    foreach (var item in baseBooks)
+                    if (IsFavorites == true)
                     {
-                        item.Thumbnail = Convert.FromBase64String(item.Image);
-                        BaseBooks.Add(item);
+                        foreach (var item in baseBooks)
+                        {
+                            if (item.IsFavorite == true)
+                            {
+                                item.Thumbnail = Convert.FromBase64String(item.Image);
+                                BaseBooks.Add(item);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in baseBooks)
+                        {
+                            item.Thumbnail = Convert.FromBase64String(item.Image);
+                            BaseBooks.Add(item);
+                        }
                     }
                 }
             }
             else
             {
                 BaseBooks = new ObservableCollection<BaseBooks>();
-                foreach (var item in FilteredBaseBooks)
+                if (IsFavorites == true)
                 {
-                    item.Thumbnail = Convert.FromBase64String(item.Image);
-                    BaseBooks.Add(item);
+                    foreach (var item in FilteredBaseBooks)
+                    {
+                        if(item.IsFavorite == true)
+                        {
+                            item.Thumbnail = Convert.FromBase64String(item.Image);
+                            BaseBooks.Add(item);
+                        }
+                    }
                 }
+                else
+                {
+                    foreach (var item in FilteredBaseBooks)
+                    {
+                        item.Thumbnail = Convert.FromBase64String(item.Image);
+                        BaseBooks.Add(item);
+                    }
+                }
+                
             }
         }
     }

@@ -7,5 +7,28 @@
         <Color x:Key="GrayColor">#f5f5f5</Color>
         <Color x:Key="WhiteColor">#ffffff</Color>
 
+        <Style x:Key="BaseLabelStyle" TargetType="Label">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="TextColor" Value="Black" />
+            <Setter Property="HorizontalOptions" Value="Start" />
+            <Setter Property="VerticalOptions" Value="CenterAndExpand" />
+            <Setter Property="Margin" Value="0,0,0,0" />
+        </Style>
+        <Style
+            x:Key="FontAwesome"
+            BasedOn="{StaticResource BaseLabelStyle}"
+            TargetType="Label">
+            <Setter Property="FontFamily" Value="FontAwesomeBold" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="TextColor" Value="Goldenrod" />
+        </Style>
+        <Style
+            x:Key="FontAwesomeRegular"
+            BasedOn="{StaticResource FontAwesome}"
+            TargetType="Label">
+            <Setter Property="FontFamily" Value="FontAwesomeRegular" />
+            <Setter Property="TextColor" Value="Goldenrod" />
+        </Style>
     </Application.Resources>
 </Application>

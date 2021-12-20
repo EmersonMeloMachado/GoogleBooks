@@ -9,6 +9,7 @@ using GoogleBooks.ViewModel.Base;
 using GoogleBooks.Model.Navigation;
 using GoogleBooks.Service.Contracts;
 using System.Collections.ObjectModel;
+using GoogleBooks.Data;
 
 namespace GoogleBooks.ViewModel
 {
@@ -79,5 +80,37 @@ namespace GoogleBooks.ViewModel
                 Console.WriteLine(ex.Message);
             }
         });
+
+        public ICommand FavoriteCommand => new Command(async (book) =>
+        {
+            try
+            {
+                if (IsBusy)
+                    return;
+
+                IsBusy = true;
+
+                BaseBooks.IdBooks = BaseBooks.IdBooks;
+                BaseBooks.Title = BaseBooks.Title;
+                BaseBooks.Description = BaseBooks.Description;
+                BaseBooks.Authors = BaseBooks.Authors;
+                BaseBooks.BuyLink = BaseBooks.BuyLink;
+                BaseBooks.Thumbnail = Convert.FromBase64String(BaseBooks.Image);
+                BaseBooks.IsFavorite = BaseBooks.IsFavorite == false ? true : false;
+
+                await MobileDatabase.Current.Save(BaseBooks);
+
+                IsBusy = false;
+            }
+            catch (Exception ex)
+            {
+
+                IsBusy = false;
+                Console.WriteLine(ex.Message);
+            }
+        });
+
+
+        
     }
 }

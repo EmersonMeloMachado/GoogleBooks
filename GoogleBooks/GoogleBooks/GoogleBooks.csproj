@@ -12,6 +12,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Font Awesome 5 Brands-Regular-400.otf" />
+    <None Remove="Resources\Font Awesome 5 Free-Regular-400.otf" />
+    <None Remove="Resources\Font Awesome 5 Free-Solid-900.otf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Font Awesome 5 Brands-Regular-400.otf" />
+    <EmbeddedResource Include="Resources\Font Awesome 5 Free-Regular-400.otf" />
+    <EmbeddedResource Include="Resources\Font Awesome 5 Free-Solid-900.otf" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Acr.UserDialogs" Version="7.2.0.561" />
     <PackageReference Include="DryIoc" Version="4.8.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
