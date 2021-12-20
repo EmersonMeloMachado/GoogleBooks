@@ -2,14 +2,13 @@
 using System.Threading.Tasks;
 using GoogleBooks.Service.Http;
 using GoogleBooks.Service.Contracts;
-using System.Collections.ObjectModel;
 
 namespace GoogleBooks.Service.Implementation 
 {
-    public class BooksGoggle : IBooksGoogle
+    public class BooksService : IBooksService
     {
         public Task<Books> GetBooks(string books) => HttpService.Current.Get<Books>(
-                url: $"https://www.googleapis.com/books/v1/volumes?q={books}");
+                url: $"https://www.googleapis.com/books/v1/volumes?q={books}&maxResults=20&startIndex=0");
 
         public Task<byte[]> GetBooksImage(string thumbnail) => HttpService.Current.GetImage<string>(
                url: thumbnail);

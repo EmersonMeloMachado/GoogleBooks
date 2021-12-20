@@ -26,7 +26,8 @@ namespace GoogleBooks.ViewModel.Base
 
             containerBuilder.Register<INavigationService, NavigationService>();
             containerBuilder.Register(made: Of(() => UserDialogs.Instance));
-            containerBuilder.Register<IBooksGoogle, BooksGoggle>();
+            containerBuilder.Register<IBooksService, BooksService>();
+            containerBuilder.Register<IBrowser, Browser>();
 
             mappings = new ConcurrentDictionary<Type, Type>();
         }

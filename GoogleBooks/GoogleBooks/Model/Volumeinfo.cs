@@ -1,4 +1,6 @@
-﻿namespace GoogleBooks.Model
+﻿using System.Collections.Generic;
+
+namespace GoogleBooks.Model
 {
     public class Volumeinfo
     {

@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace GoogleBooks.Service.Contracts
 {
-    public interface IBooksGoogle
+    public interface IBooksService
     {
         Task<Books> GetBooks(string books);
 

@@ -17,6 +17,7 @@ namespace GoogleBooks.ViewModel.Base
         protected bool Disposed { get; set; }
 
         private bool isBusy;
+        private bool isVisible;
         private NavigationParameters parameters;
         public bool IsNotBusy { get => !isBusy; }
 
@@ -24,6 +25,11 @@ namespace GoogleBooks.ViewModel.Base
         {
             get => isBusy;
             set => SetProperty(ref isBusy, value);
+        }
+        public bool IsVisible
+        {
+            get => isVisible;
+            set => SetProperty(ref isVisible, value);
         }
 
         public NavigationParameters Parameters

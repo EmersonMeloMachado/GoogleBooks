@@ -5,7 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:base="clr-namespace:GoogleBooks.View.Base"
     xmlns:converters="clr-namespace:GoogleBooks.Converter"
-    xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
+    xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    BackgroundColor="{StaticResource WhiteColor}">
     <base:BasePage.Resources>
         <ResourceDictionary>
             <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImage" />
@@ -14,37 +15,79 @@
     <base:BasePage.Content>
         <ScrollView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <Grid
-                ColumnDefinitions="*,auto"
+                ColumnDefinitions="*,*"
                 HorizontalOptions="FillAndExpand"
-                RowDefinitions="auto,*,100"
+                RowDefinitions="100,auto,*,80"
                 VerticalOptions="FillAndExpand">
 
-                <ffimageloading:CachedImage
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    Aspect="AspectFit"
-                    HorizontalOptions="FillAndExpand"
-                    Source="{Binding BaseBooks.Thumbnail, Converter={StaticResource ByteArrayToImage}}"
-                    VerticalOptions="FillAndExpand" />
-
                 <Label
+                    Grid.Row="0"
+                    Grid.ColumnSpan="2"
+                    FontAttributes="Bold"
+                    FontSize="15"
+                    HorizontalOptions="FillAndExpand"
+                    HorizontalTextAlignment="Center"
+                    Text="{Binding BaseBooks.Title}"
+                    TextColor="Black"
+                    VerticalOptions="FillAndExpand"
+                    VerticalTextAlignment="Center" />
+
+                <ffimageloading:CachedImage
                     Grid.Row="1"
                     Grid.Column="0"
+                    Aspect="AspectFit"
+                    FadeAnimationDuration="500"
+                    FadeAnimationEnabled="True"
+                    HeightRequest="200"
+                    HorizontalOptions="FillAndExpand"
+                    Source="{Binding BaseBooks.Thumbnail, Converter={StaticResource ByteArrayToImage}}"
+                    VerticalOptions="FillAndExpand"
+                    WidthRequest="200" />
+
+                <CollectionView
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    BackgroundColor="{StaticResource WhiteColor}"
+                    HeightRequest="100"
+                    ItemsSource="{Binding Authors}"
+                    SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Label HorizontalTextAlignment="Start" Text="{Binding name}" />
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label
+                    Grid.Row="2"
                     Grid.ColumnSpan="2"
                     Padding="10"
                     HorizontalOptions="FillAndExpand"
                     Text="{Binding BaseBooks.Description}"
                     VerticalOptions="FillAndExpand" />
 
-                <Button
-                    Grid.Row="2"
-                    Grid.Column="0"
+                <Frame
+                    Grid.Row="3"
                     Grid.ColumnSpan="2"
-                    BackgroundColor="Transparent"
-                    HeightRequest="50"
-                    Text="Abrir Web"
-                    WidthRequest="80" />
+                    Padding="0"
+                    BackgroundColor="{StaticResource WhiteColor}"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                    <Label HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span
+                                    FontSize="15"
+                                    Text="Open Web"
+                                    TextColor="Blue"
+                                    TextDecorations="Underline" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenBrowserCommand}" />
+                    </Frame.GestureRecognizers>
+                </Frame>
             </Grid>
         </ScrollView>
     </base:BasePage.Content>

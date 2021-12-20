@@ -15,6 +15,8 @@
     <PackageReference Include="Acr.UserDialogs" Version="7.2.0.561" />
     <PackageReference Include="DryIoc" Version="4.8.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
+    <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
     <PackageReference Include="System.Text.Json" Version="6.0.1" />
     <PackageReference Include="Xamarin.FFImageLoading" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.11.982" />
@@ -37,5 +39,9 @@
     <EmbeddedResource Update="View\BookDetailView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Dtos\" />
   </ItemGroup>
 </Project>
