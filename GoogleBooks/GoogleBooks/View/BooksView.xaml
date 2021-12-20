@@ -76,10 +76,13 @@
                 HorizontalScrollBarVisibility="Never"
                 ItemsSource="{Binding BaseBooks}"
                 ItemsUpdatingScrollMode="KeepItemsInView"
+                RemainingItemsThreshold="4"
+                RemainingItemsThresholdReachedCommand="{Binding ThresholdReachedCommand}"
                 SelectedItem="{Binding ItemSelected}"
                 SelectionChangedCommand="{Binding SelectedCommand, Mode=TwoWay}"
                 SelectionChangedCommandParameter="{Binding ItemSelected}"
-                SelectionMode="Single">
+                SelectionMode="Single"
+                VerticalScrollBarVisibility="Always">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid

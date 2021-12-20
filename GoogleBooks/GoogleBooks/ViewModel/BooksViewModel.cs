@@ -13,11 +13,13 @@ using System.Collections.Generic;
 using GoogleBooks.Model.Navigation;
 using GoogleBooks.Service.Contracts;
 using System.Collections.ObjectModel;
+using Xamarin.Essentials;
 
 namespace GoogleBooks.ViewModel
 {
     public class BooksViewModel : BaseViewModel
     {
+        #region Fields
         private Books books;
         private BaseBooks itemSelected;
         public ObservableCollection<BaseBooks> baseBooks;
@@ -25,8 +27,12 @@ namespace GoogleBooks.ViewModel
         private string search;
         private bool isFavorites;
         private string selectedBooksId;
+        private const int PageSize = 5;
+        private int PageIndex = 0;
+        private int PageCount = 0;
 
         private readonly IBooksService BooksService;
+        #endregion Fields
 
         public Books Books
         {
@@ -70,7 +76,7 @@ namespace GoogleBooks.ViewModel
             set
             {
                 SetProperty(ref search, value);
-                Filter(search);
+                FilterAsync(search);
             }
         }
 
@@ -88,12 +94,7 @@ namespace GoogleBooks.ViewModel
         {
             try
             {
-                IsBusy = true;
-                MockSkeleton();
-
                 await OnLoadPageData().ConfigureAwait(true);
-
-                IsBusy = false;
             }
             catch (Exception ex)
             {
@@ -110,7 +111,7 @@ namespace GoogleBooks.ViewModel
                     return;
 
                 if (text.Length > 3)
-                    Filter(text);
+                    FilterAsync(text);
 
 
                 IsBusy = false;
@@ -143,14 +144,16 @@ namespace GoogleBooks.ViewModel
                 Console.WriteLine(ex.Message);
             }
         });
-        public ICommand LoadCommand => new Command(async () =>
+        public ICommand FilterFavoritesCommand => new Command(async () =>
         {
             try
             {
                 if (IsBusy)
                     return;
 
-                BaseBooks = await GetBooks();
+                IsFavorites = IsFavorites == false ? true : false;
+
+               await FilterAsync();
             }
             catch (Exception ex)
             {
@@ -163,20 +166,35 @@ namespace GoogleBooks.ViewModel
             }
         });
 
-        public ICommand FilterFavoritesCommand => new Command(() =>
+        public ICommand ThresholdReachedCommand => new Command(async () =>
         {
+
+            if (IsBusy)
+                return;
+
             try
             {
-                if (IsBusy)
-                    return;
+                IsBusy = true;
 
-                IsFavorites = IsFavorites == false ? true : false;
+                if(PageIndex <=  PageCount && IsFavorites == false)
+                {
+                    var baseBooks = await GetBookDtoAsync().ConfigureAwait(true);
+                    if (baseBooks.Count > 0)
+                    {
+                        foreach (var item in baseBooks.Skip(PageIndex * PageSize).Take(PageSize).ToList())
+                        {
+                            item.Thumbnail = Convert.FromBase64String(item.Image);
+                            BaseBooks.Add(item);
+                        }
+                    }
 
-                Filter("");
+                    PageIndex += 1;
+                }
+
+                IsBusy = false;
             }
             catch (Exception ex)
             {
-                IsBusy = false;
                 Console.WriteLine(ex.Message);
             }
             finally
@@ -187,17 +205,28 @@ namespace GoogleBooks.ViewModel
 
         public override async Task OnLoadPageData()
         {
-            BaseBooks.Clear();
-            FilteredBaseBooks.Clear();
-            Device.BeginInvokeOnMainThread(async () => { BaseBooks = await GetBooks().ConfigureAwait(true); });
-            IsBusy = false;
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                var baseBooks = await GetBooks(pageIndex: PageIndex, pageSize: PageSize).ConfigureAwait(true);
+                foreach (var item in baseBooks)
+                {
+                    BaseBooks.Add(item);
+                }
+
+                PageIndex += 1;
+            });
         }
-        private async Task<ObservableCollection<BaseBooks>> GetBooks()
+        private async Task<List<BaseBooks>> GetBooks(int pageIndex, int pageSize)
         {
             var baseBooks = new ObservableCollection<BaseBooks>();
-
             try
             {
+                IsBusy = true;
+
+                FilteredBaseBooks.Clear();
+
+                MockSkeleton();
+
                 var BooksDto = await GetBookDtoAsync();
                 if (BooksDto.Count == 0)
                 {
@@ -208,6 +237,8 @@ namespace GoogleBooks.ViewModel
                         await MobileDatabase.Current.Save(item);
                         FilteredBaseBooks.Add(item);
                     }
+
+                    PageCount = baseBooks.Count / PageSize;
                 }
                 else
                 {
@@ -225,14 +256,25 @@ namespace GoogleBooks.ViewModel
                         baseBooks.Add(b);
                         FilteredBaseBooks.Add(item);
                     }
+
+                    PageCount = baseBooks.Count / PageSize;
                 }
+
+                BaseBooks.Clear();
+
+                IsBusy = false;
             }
             catch (Exception ex)
             {
+                IsBusy = false;
                 Console.WriteLine(ex.Message);
             }
+            finally
+            {
+                IsBusy = false;
+            }
 
-            return baseBooks;
+            return baseBooks.Skip(pageIndex * pageSize).Take(pageSize).ToList();
         }
 
         private void MockSkeleton()
@@ -262,29 +304,32 @@ namespace GoogleBooks.ViewModel
         private async Task<ObservableCollection<BaseBooks>> GetBookService()
         {
             var baseBooks = new ObservableCollection<BaseBooks>();
-            var books = await BooksService.GetBooks("mobiledevelopment").ConfigureAwait(true);
-            if (books.items.Any())
+            var internet = Connectivity.NetworkAccess;
+            if(internet == NetworkAccess.Internet)
             {
-                var itens = books.items.ToList();
-                for (int i = 0; i < itens.Count; i++)
+                var books = await BooksService.GetBooks("mobiledevelopment").ConfigureAwait(true);
+                if (books.items.Any())
                 {
-                    BaseBooks b = new BaseBooks();
-                    b.IdBooks = itens[i]?.id;
-                    b.Title = itens[i]?.volumeInfo?.title;
-                    b.Description = itens[i]?.volumeInfo?.description;
-                    b.Authors = itens[i]?.volumeInfo?.authors.ToList();
-                    b.BuyLink = itens[i]?.saleInfo?.buyLink;
-                    b.Thumbnail = await BooksService.GetBooksImage(itens[i]?.volumeInfo?.imageLinks?.thumbnail).ConfigureAwait(true);
-                    baseBooks.Add(b);
+                    var itens = books.items.ToList();
+                    for (int i = 0; i < itens.Count; i++)
+                    {
+                        BaseBooks b = new BaseBooks();
+                        b.IdBooks = itens[i]?.id;
+                        b.Title = itens[i]?.volumeInfo?.title;
+                        b.Description = itens[i]?.volumeInfo?.description;
+                        b.Authors = itens[i]?.volumeInfo?.authors.ToList();
+                        b.BuyLink = itens[i]?.saleInfo?.buyLink;
+                        b.Thumbnail = await BooksService.GetBooksImage(itens[i]?.volumeInfo?.imageLinks?.thumbnail).ConfigureAwait(true);
+                        baseBooks.Add(b);
+                    }
+                    return baseBooks;
                 }
-
-                return baseBooks;
             }
 
             return null;
         }
 
-        public void Filter(string text)
+        public async Task FilterAsync(string text = null)
         {
             if (!string.IsNullOrEmpty(text))
             {
